@@ -1,0 +1,9 @@
+name: NanoMail
+version: @version@
+main: com.github.nanodot.nanomail.NanoMail
+api-version: 1.16
+commands:
+  nanomail:
+    description: Command allows to use NanoMail system
+    permission: nanomail.general
+    aliases: [nm]
