@@ -17,7 +17,7 @@ public final class NanoMail extends JavaPlugin {
     @Override
     public void onEnable() {
         // Temporary form of data storage, loading data
-        File file = new File("./mails");
+        File file = new File(this.getDataFolder().getAbsolutePath() + "/mails.txt");
         FileInputStream fs;
         ObjectInputStream in;
         try {
@@ -36,6 +36,7 @@ public final class NanoMail extends JavaPlugin {
         // Registering plugin command
         PluginCommand nanoMailCommand = Bukkit.getPluginCommand("nanomail");
         if (nanoMailCommand == null) {
+            System.out.println("Command is null!");
             return;
         }
         nanoMailCommand.setExecutor(new NanoMailCommand(this));
@@ -44,12 +45,22 @@ public final class NanoMail extends JavaPlugin {
     @Override
     public void onDisable() {
         // Temporary form of data storage, saving data
-        File file = new File("./mails");
+        File file = new File(this.getDataFolder().getAbsolutePath() + "/mails.txt");
         FileOutputStream fs;
         try {
             fs = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            try {
+                if(file.getParentFile().mkdirs()) {
+                    System.out.println("Created parent file");
+                }
+                if(file.createNewFile()) {
+                    System.out.println("Data file created");
+                }
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
             return;
         }
         ObjectOutputStream out;

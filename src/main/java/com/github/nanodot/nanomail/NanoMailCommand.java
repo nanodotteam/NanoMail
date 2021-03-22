@@ -25,9 +25,10 @@ public class NanoMailCommand implements CommandExecutor {
         // /nanomail read - > shows all unread emails
 
         // No argument is provided
-        if(args[0] == null) {
+        if(args.length == 0) {
             sender.sendMessage(helpPage);
-        } else if (args[0] == "send") { // Mail send handler
+        } else if (args.length >= 1 && args[0].equals("send")) { // Mail send handler
+            sender.sendMessage("SENDING");
             String receiverName = args[1];
             if(receiverName == null) {
                 sender.sendMessage("Receiver is null");
@@ -45,11 +46,15 @@ public class NanoMailCommand implements CommandExecutor {
                 return true;
             }
             LinkedList<String> receiverMessages = main.mails.get(receiverID);
+            if(receiverMessages == null) {
+                receiverMessages = new LinkedList<>();
+            }
             String senderName = sender.getName();
             receiverMessages.add(senderName + ": " + message);
             main.mails.put(receiverID, receiverMessages);
             sender.sendMessage("Message sent!");
-        } else if (args[0] == "read") { // Mail read handler
+        } else if (args.length >= 1 && args[0].equals("read")) { // Mail read handler
+            sender.sendMessage("READING");
             Player player;
             if(sender instanceof Player) {
                 player = (Player) sender;
@@ -59,6 +64,9 @@ public class NanoMailCommand implements CommandExecutor {
             }
             UUID senderID = player.getUniqueId();
             LinkedList<String> senderMails = main.mails.get(senderID);
+            if(senderMails == null) {
+                senderMails = new LinkedList<>();
+            }
             StringBuilder response = new StringBuilder();
             response.append("Your mails:\n");
             for(String mail : senderMails) {
