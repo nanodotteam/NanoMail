@@ -11,43 +11,29 @@ import java.util.UUID;
 
 public final class NanoMail extends JavaPlugin {
 
+    // UUID of player with corresponding messages sent to that player
     HashMap<UUID, LinkedList<String>> mails = new HashMap<>();
 
     @Override
     public void onEnable() {
+        // Temporary form of data storage, loading data
         File file = new File("./mails");
         FileInputStream fs;
-        try {
-            fs = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
         ObjectInputStream in;
         try {
+            fs = new FileInputStream(file);
             in = new ObjectInputStream(fs);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        try {
             Object read = in.readObject();
             if(read instanceof HashMap) {
                 mails = (HashMap<UUID, LinkedList<String>>) read;
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
             in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             fs.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
+        // Registering plugin command
         PluginCommand nanoMailCommand = Bukkit.getPluginCommand("nanomail");
         if (nanoMailCommand == null) {
             return;
@@ -57,6 +43,7 @@ public final class NanoMail extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Temporary form of data storage, saving data
         File file = new File("./mails");
         FileOutputStream fs;
         try {

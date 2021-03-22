@@ -23,9 +23,11 @@ public class NanoMailCommand implements CommandExecutor {
         // /nanomail - > help page
         // /nanomail send <receiver> <message> - > send a mail with message to receiver
         // /nanomail read - > shows all unread emails
+
+        // No argument is provided
         if(args[0] == null) {
             sender.sendMessage(helpPage);
-        } else if (args[0] == "send") {
+        } else if (args[0] == "send") { // Mail send handler
             String receiverName = args[1];
             if(receiverName == null) {
                 sender.sendMessage("Receiver is null");
@@ -47,7 +49,7 @@ public class NanoMailCommand implements CommandExecutor {
             receiverMessages.add(senderName + ": " + message);
             main.mails.put(receiverID, receiverMessages);
             sender.sendMessage("Message sent!");
-        } else if (args[0] == "read") {
+        } else if (args[0] == "read") { // Mail read handler
             Player player;
             if(sender instanceof Player) {
                 player = (Player) sender;
