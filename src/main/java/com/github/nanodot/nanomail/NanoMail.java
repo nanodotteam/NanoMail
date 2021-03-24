@@ -4,39 +4,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.logging.Logger;
 
 public final class NanoMail extends JavaPlugin {
 
     // UUID of player with corresponding messages sent to that player
-    HashMap<UUID, LinkedList<String>> mails = new HashMap<>();
+    Logger logger = this.getLogger();
+    MailDataHandler mailDataHandler;
 
     @Override
     public void onEnable() {
-        // Temporary form of data storage, loading data
-        File file = new File(this.getDataFolder().getAbsolutePath() + "/mails.txt");
-        FileInputStream fs;
-        ObjectInputStream in;
-        try {
-            fs = new FileInputStream(file);
-            in = new ObjectInputStream(fs);
-            Object read = in.readObject();
-            if(read instanceof HashMap) {
-                mails = (HashMap<UUID, LinkedList<String>>) read;
-            }
-            in.close();
-            fs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
+        logger.info("Starting up...");
+
+        // Initialize MailDataHandler
+        mailDataHandler = new MailDataHandler();
+
         // Registering plugin command
         PluginCommand nanoMailCommand = Bukkit.getPluginCommand("nanomail");
         if (nanoMailCommand == null) {
-            System.out.println("Command is null!");
+            logger.warning("NanoMail command is null! (Problem related to plugin.yml)");
             return;
         }
         nanoMailCommand.setExecutor(new NanoMailCommand(this));
@@ -44,46 +30,12 @@ public final class NanoMail extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Temporary form of data storage, saving data
-        File file = new File(this.getDataFolder().getAbsolutePath() + "/mails.txt");
-        FileOutputStream fs;
-        try {
-            fs = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            try {
-                if(file.getParentFile().mkdirs()) {
-                    System.out.println("Created parent file");
-                }
-                if(file.createNewFile()) {
-                    System.out.println("Data file created");
-                }
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            return;
-        }
-        ObjectOutputStream out;
-        try {
-            out = new ObjectOutputStream(fs);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        try {
-            out.writeObject(mails);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            fs.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Save mails to disk
+        mailDataHandler.saveMailsToDisk();
+    }
+
+    public void disableThis() {
+        logger.warning("Disabling plugin (probably due to errors)");
+        Bukkit.getPluginManager().disablePlugin(this);
     }
 }
