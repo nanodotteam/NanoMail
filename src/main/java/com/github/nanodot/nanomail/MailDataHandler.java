@@ -45,18 +45,6 @@ public class MailDataHandler {
             return;
         }
 
-        // File structure will look like this
-        // File name: Player's UUID
-        // lastID = 1
-        // mails:
-        //   0:
-        //     authorUUID: "xxxx-xxxx-xxxx-xxxx"
-        //     content: "Test of NanoMail"
-        //   1:
-        //     authorUUID: "xxxx-xxxx-xxxx-xxxx"
-        //     content: "Hey! What's up?"
-        // ...
-
         for(File oneUserMails : mailDataFiles) {
             String playerUUIDFileName = oneUserMails.getName();
             // Remove .yml from the end of file name
