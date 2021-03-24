@@ -6,11 +6,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedList;
 import java.util.UUID;
 
 public class NanoMailCommand implements CommandExecutor {
 
+    // TODO: Create proper help page
     private final String helpPage = "Help page W.I.P.";
     private NanoMail main;
 
@@ -27,7 +27,7 @@ public class NanoMailCommand implements CommandExecutor {
         // No argument is provided
         if(args.length == 0) {
             sender.sendMessage(helpPage);
-        } else if (args.length >= 1 && args[0].equals("send")) { // Mail send handler
+        } else if (args.length >= 3 && args[0].equals("send")) { // Mail send handler
             sender.sendMessage("SENDING");
             String receiverName = args[1];
             if(receiverName == null) {
@@ -36,22 +36,22 @@ public class NanoMailCommand implements CommandExecutor {
             }
             Player receiver = Bukkit.getPlayer(receiverName);
             if(receiver == null) {
-                sender.sendMessage("Receiver does not exist");
+                sender.sendMessage("Receiver is not online, trying to get offline");
                 return true;
             }
+            // TODO: It should find offline player UUID and add the mail :)
             UUID receiverID = receiver.getUniqueId();
             String message = args[2];
             if(message == null) {
                 sender.sendMessage("Message is null");
                 return true;
             }
-            LinkedList<String> receiverMessages = main.mails.get(receiverID);
-            if(receiverMessages == null) {
-                receiverMessages = new LinkedList<>();
-            }
-            String senderName = sender.getName();
-            receiverMessages.add(senderName + ": " + message);
-            main.mails.put(receiverID, receiverMessages);
+            Mail newMail = new Mail();
+            newMail.setMailID(0);
+            Player player = (Player) sender;
+            newMail.setAuthorUUID(player.getUniqueId());
+            newMail.setContent(message);
+            main.mailDataHandler.toPlayerAddMail(receiverID, newMail);
             sender.sendMessage("Message sent!");
         } else if (args.length >= 1 && args[0].equals("read")) { // Mail read handler
             sender.sendMessage("READING");
@@ -63,14 +63,11 @@ public class NanoMailCommand implements CommandExecutor {
                 return true;
             }
             UUID senderID = player.getUniqueId();
-            LinkedList<String> senderMails = main.mails.get(senderID);
-            if(senderMails == null) {
-                senderMails = new LinkedList<>();
-            }
+            Mail[] senderMails = main.mailDataHandler.getPlayerMails(senderID);
             StringBuilder response = new StringBuilder();
             response.append("Your mails:\n");
-            for(String mail : senderMails) {
-                response.append(mail + "\n");
+            for(Mail mail : senderMails) {
+                response.append(mail.toString() + "\n");
             }
             sender.sendMessage(response.toString());
         }

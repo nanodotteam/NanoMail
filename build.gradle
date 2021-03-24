@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.github.nanodot'
-version = '0.1'
+version = '0.2'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -25,6 +25,7 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     compile ("me.lucko:helper:5.6.5")
+    compile 'org.yaml:snakeyaml:1.28'
 }
 
 processResources {
