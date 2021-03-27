@@ -11,6 +11,7 @@ public final class NanoMail extends JavaPlugin {
     // UUID of player with corresponding messages sent to that player
     Logger logger = this.getLogger();
     MailDataHandler mailDataHandler;
+    ProfilesCache profilesCache;
 
     @Override
     public void onEnable() {
@@ -26,12 +27,17 @@ public final class NanoMail extends JavaPlugin {
             return;
         }
         nanoMailCommand.setExecutor(new NanoMailCommand(this));
+
+        // Setup profiles caching
+        profilesCache = new ProfilesCache();
+        Bukkit.getPluginManager().registerEvents(profilesCache, this);
     }
 
     @Override
     public void onDisable() {
         // Save mails to disk
         mailDataHandler.saveMailsToDisk();
+        profilesCache.saveCacheToDisk();
     }
 
     public void disableThis() {

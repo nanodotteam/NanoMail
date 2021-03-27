@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class MailDataHandler {
-    private HashMap<UUID, MailBox> mailData = new HashMap<>();
+    private final HashMap<UUID, MailBox> mailData = new HashMap<>();
     private final NanoMail main = NanoMail.getPlugin(NanoMail.class);
     File mailDataFolder = new File(main.getDataFolder().getAbsolutePath() + "/mails/");
     private final Logger logger = main.logger;
@@ -48,7 +48,7 @@ public class MailDataHandler {
         for(File oneUserMails : mailDataFiles) {
             String playerUUIDFileName = oneUserMails.getName();
             // Remove .yml from the end of file name
-            String playerUUIDString = playerUUIDFileName.substring(0, playerUUIDFileName.length() - 5);
+            String playerUUIDString = playerUUIDFileName.substring(0, playerUUIDFileName.length() - 4);
             UUID playerUUID = UUID.fromString(playerUUIDString);
             FileInputStream mailDataInputStream;
 
