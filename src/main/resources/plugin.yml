@@ -1,5 +1,5 @@
 name: NanoMail
-version: @version@
+version: 0.2 #@version@ does not work!
 main: com.github.nanodot.nanomail.NanoMail
 api-version: 1.16
 commands:
